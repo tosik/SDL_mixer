@@ -312,7 +312,7 @@ static void OGG_SetVolume(void *context, int volume)
 }
 
 /* Start playback of a given OGG stream */
-static int OGG_Play(void *context, int play_count)
+static int OGG_Play(void *context, int play_count, double loop_ms)
 {
     OGG_music *music = (OGG_music *)context;
     music->play_count = play_count;
@@ -381,7 +381,7 @@ static int OGG_GetSome(void *context, void *data, int bytes, SDL_bool *done)
             if (music->play_count > 0) {
                 play_count = (music->play_count - 1);
             }
-            if (OGG_Play(music, play_count) < 0) {
+            if (OGG_Play(music, play_count, 0.0) < 0) {
                 return -1;
             }
         }

@@ -164,7 +164,7 @@ static void add_music_decoder(const char *decoder)
 /* Local low-level functions prototypes */
 static void music_internal_initialize_volume(void);
 static void music_internal_volume(int volume);
-static int  music_internal_play(Mix_Music *music, int play_count, double position);
+static int  music_internal_play(Mix_Music *music, int play_count, double position, double loop_ms);
 static int  music_internal_position(double position);
 static SDL_bool music_internal_playing(void);
 static void music_internal_halt(void);
@@ -670,7 +670,7 @@ Mix_MusicType Mix_GetMusicType(const Mix_Music *music)
 
 /* Play a music chunk.  Returns 0, or -1 if there was an error.
  */
-static int music_internal_play(Mix_Music *music, int play_count, double position)
+static int music_internal_play(Mix_Music *music, int play_count, double position, double loop_ms)
 {
     int retval = 0;
 
@@ -696,7 +696,7 @@ static int music_internal_play(Mix_Music *music, int play_count, double position
     music_internal_initialize_volume();
 
     /* Set up for playback */
-    retval = music->interface->Play(music->context, play_count);
+    retval = music->interface->Play(music->context, play_count, loop_ms);
 
     /* Set the playback position, note any errors if an offset is used */
     if (retval == 0) {
@@ -719,6 +719,11 @@ static int music_internal_play(Mix_Music *music, int play_count, double position
 }
 
 int Mix_FadeInMusicPos(Mix_Music *music, int loops, int ms, double position)
+{
+    return Mix_FadeInMusicPosWithLoopPosition(music, loops, ms, position, 0.0);
+}
+
+int Mix_FadeInMusicPosWithLoopPosition(Mix_Music *music, int loops, int ms, double position, double loop_ms)
 {
     int retval;
 
@@ -754,7 +759,7 @@ int Mix_FadeInMusicPos(Mix_Music *music, int loops, int ms, double position)
         /* Loop is the number of times to play the audio */
         loops = 1;
     }
-    retval = music_internal_play(music, loops, position);
+    retval = music_internal_play(music, loops, position, loop_ms);
     music_active = (retval == 0);
     Mix_UnlockAudio();
 
@@ -762,11 +767,15 @@ int Mix_FadeInMusicPos(Mix_Music *music, int loops, int ms, double position)
 }
 int Mix_FadeInMusic(Mix_Music *music, int loops, int ms)
 {
-    return Mix_FadeInMusicPos(music, loops, ms, 0.0);
+    return Mix_FadeInMusicPosWithLoopPosition(music, loops, ms, 0.0, 0.0);
 }
 int Mix_PlayMusic(Mix_Music *music, int loops)
 {
-    return Mix_FadeInMusicPos(music, loops, 0, 0.0);
+    return Mix_FadeInMusicPosWithLoopPosition(music, loops, 0, 0.0, 0.0);
+}
+int Mix_PlayMusicWithLoopPosition(Mix_Music *music, int loops, double loop_ms)
+{
+    return Mix_FadeInMusicPosWithLoopPosition(music, loops, 0, 0.0, loop_ms);
 }
 
 /* Set the playing music position */

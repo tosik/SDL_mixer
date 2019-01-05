@@ -103,7 +103,7 @@ static void TIMIDITY_SetVolume(void *context, int volume)
     Timidity_SetVolume(music->song, volume);
 }
 
-static int TIMIDITY_Play(void *context, int play_count)
+static int TIMIDITY_Play(void *context, int play_count, double loop_ms)
 {
     TIMIDITY_Music *music = (TIMIDITY_Music *)context;
     music->play_count = play_count;
@@ -149,7 +149,7 @@ static int TIMIDITY_GetSome(void *context, void *data, int bytes, SDL_bool *done
             if (music->play_count > 0) {
                 play_count = (music->play_count - 1);
             }
-            if (TIMIDITY_Play(music, play_count) < 0) {
+            if (TIMIDITY_Play(music, play_count, 0.0) < 0) {
                 return -1;
             }
         }

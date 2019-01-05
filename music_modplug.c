@@ -206,7 +206,7 @@ static void MODPLUG_SetVolume(void *context, int volume)
 }
 
 /* Start playback of a given modplug stream */
-static int MODPLUG_Play(void *context, int play_count)
+static int MODPLUG_Play(void *context, int play_count, double loop_ms)
 {
     MODPLUG_Music *music = (MODPLUG_Music *)context;
     music->play_count = play_count;
@@ -244,7 +244,7 @@ static int MODPLUG_GetSome(void *context, void *data, int bytes, SDL_bool *done)
             if (music->play_count > 0) {
                 play_count = (music->play_count - 1);
             }
-            if (MODPLUG_Play(music, play_count) < 0) {
+            if (MODPLUG_Play(music, play_count, 0.0) < 0) {
                 return -1;
             }
         }

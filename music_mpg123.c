@@ -130,6 +130,8 @@ typedef struct
     SDL_AudioStream *stream;
     unsigned char *buffer;
     size_t buffer_size;
+
+    double loop_ms;
 } MPG123_Music;
 
 
@@ -284,10 +286,11 @@ static void MPG123_SetVolume(void *context, int volume)
     music->volume = volume;
 }
 
-static int MPG123_Play(void *context, int play_count)
+static int MPG123_Play(void *context, int play_count, double loop_ms)
 {
     MPG123_Music *music = (MPG123_Music *)context;
     music->play_count = play_count;
+    music->loop_ms = loop_ms;
     return MPG123_Seek(music, 0.0);
 }
 
@@ -348,7 +351,8 @@ static int MPG123_GetSome(void *context, void *data, int bytes, SDL_bool *done)
             if (music->play_count > 0) {
                 play_count = (music->play_count - 1);
             }
-            if (MPG123_Play(music, play_count) < 0) {
+            music->play_count = play_count;
+            if (MPG123_Seek(music, music->loop_ms) < 0) {
                 return -1;
             }
         }

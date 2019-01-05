@@ -149,7 +149,7 @@ static char **parse_args(char *command, char *last_arg)
 }
 
 /* Start playback of a given music stream */
-static int MusicCMD_Play(void *context, int play_count)
+static int MusicCMD_Play(void *context, int play_count, double loop_ms)
 {
     MusicCMD *music = (MusicCMD *)context;
 
@@ -213,7 +213,7 @@ static SDL_bool MusicCMD_IsPlaying(void *context)
             if (music->play_count > 0) {
                 play_count = (music->play_count - 1);
             }
-            MusicCMD_Play(music, play_count);
+            MusicCMD_Play(music, play_count, 0.0);
             return SDL_TRUE;
         }
     }

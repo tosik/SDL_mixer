@@ -71,7 +71,7 @@ typedef struct
     void (*SetVolume)(void *music, int volume);
 
     /* Start playing music from the beginning with an optional loop count */
-    int (*Play)(void *music, int play_count);
+    int (*Play)(void *music, int play_count, double loop_ms);
 
     /* Returns SDL_TRUE if music is still playing */
     SDL_bool (*IsPlaying)(void *music);

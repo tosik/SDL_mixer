@@ -174,7 +174,7 @@ static void WAV_SetVolume(void *context, int volume)
 }
 
 /* Start playback of a given WAV stream */
-static int WAV_Play(void *context, int play_count)
+static int WAV_Play(void *context, int play_count, double loop_ms)
 {
     WAV_Music *music = (WAV_Music *)context;
     int i;
@@ -266,7 +266,7 @@ static int WAV_GetSome(void *context, void *data, int bytes, SDL_bool *done)
             if (music->play_count > 0) {
                 play_count = (music->play_count - 1);
             }
-            if (WAV_Play(music, play_count) < 0) {
+            if (WAV_Play(music, play_count, 0.0) < 0) {
                 return -1;
             }
         }

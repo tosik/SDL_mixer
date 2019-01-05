@@ -589,7 +589,7 @@ static SDL_AudioSpec *Mix_LoadMusic_RW(Mix_MusicType music_type, SDL_RWops *src,
     Mix_LockAudio();
 
     if (interface->Play) {
-        interface->Play(music, 1);
+        interface->Play(music, 1, 0.0);
     }
     playing = SDL_TRUE;
 
